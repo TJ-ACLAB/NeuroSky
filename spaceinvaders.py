@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 # 读取excel文件
 # pd.read_excel('文件所在路径')
-
+import datetime
 from pygame import *
 import sys
 from os.path import abspath, dirname
@@ -13,14 +13,14 @@ from random import choice
 from NeuroPy import NeuroPy
 from time import sleep
 import random
-
+import csv
 BASE_PATH = abspath(dirname(__file__))
 FONT_PATH = BASE_PATH + '/fonts/'
 IMAGE_PATH = BASE_PATH + '/images/'
 SOUND_PATH = BASE_PATH + '/sounds/'
 
 # Neuropy port
-PORT1 = 'COM5'
+PORT1 = 'COM3'
 PORT2 = 9600
 
 # Colors (R, G, B)
@@ -404,18 +404,49 @@ class SpaceInvaders(object):
         self.neuropy.start()
 
     def main(self):
+
+        time1 =datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        with open(time1+'.csv', 'ab') as f:
+            writer = csv.writer(f)
+            writer.writerow(['attention', 'meditation','rawValue', 'delta', 'theta','lowAlpha', 'highAlpha',
+                             'lowBeta', 'highBeta', 'lowGamma', 'midGamma', 'poorSignal','blinkStrength'])
+
+        fig, ax = plt.subplots()
+        x = []
+        y = []
+        res = 0
+        cnt=0
         while True:
             # Main title screen
-            #attention, meditation, rawValue, delta, theta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, midGamma, poorSignal and blinkStrength
-            # print("attention:",self.neuropy.attention)
-            # print("meditation:",self.neuropy.meditation)
-            print("rawValue:",self.neuropy.rawValue)
-            # print("delta:",self.neuropy.delta)
-            # print("theta:",self.neuropy.theta)
-            # print("lowAlpha:",self.neuropy.lowAlpha)
-            # print("highAlpha:",self.neuropy.highAlpha)
-            # print("lowBeta:",self.neuropy.lowBeta)
-            # print("highBeta:",self.neuropy.highBeta)
+            # attention, meditation, rawValue, delta, theta
+            # lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, midGamma, poorSignal and blinkStrength
+
+            attention = self.neuropy.attention
+            meditation = self.neuropy.meditation
+            rawValue = self.neuropy.rawValue
+            delta = self.neuropy.delta
+            theta = self.neuropy.theta
+            lowAlpha = self.neuropy.lowAlpha
+            highAlpha = self.neuropy.highAlpha
+            lowBeta = self.neuropy.lowBeta
+            highBeta = self.neuropy.highBeta
+            lowGamma = self.neuropy.lowGamma
+            midGamma = self.neuropy.midGamma
+            poorSignal = self.neuropy.poorSignal
+            blinkStrength = self.neuropy.blinkStrength
+            with open(time1+'.csv', 'ab') as f:
+                writer = csv.writer(f)
+                writer.writerow([attention, meditation,rawValue, delta, theta,lowAlpha, highAlpha,
+                                 lowBeta, highBeta, lowGamma, midGamma, poorSignal,blinkStrength])
+            x.append(cnt)
+            cnt+=1
+            y.append(50 * attention)
+            ax.cla()  # clear plot
+            ax.plot(x, y, 'r', lw=1)  # draw line chart
+            # ax.bar(y, height=y, width=0.3) # draw bar chart
+            # do_something()
+            plt.pause(0.1)
+
             if self.mainScreen:
                 self.screen.blit(self.background, (0, 0))
                 self.titleText.draw(self.screen)
